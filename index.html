@@ -912,7 +912,16 @@
             });
             document.getElementById('p-total').innerText = data.total.toFixed(2);
             document.getElementById('p-advance').innerText = (data.advance || 0).toFixed(2);
-            document.getElementById('p-balance').innerText = (data.balance || 0).toFixed(2);
+            
+            const bal = parseFloat(data.balance) || 0;
+            if (bal <= 0) {
+                document.getElementById('p-balance-label').innerText = "Status";
+                document.getElementById('p-balance-value').innerHTML = "<span style='color: green;'>Fully Paid</span>";
+            } else {
+                document.getElementById('p-balance-label').innerText = "Balance Due";
+                document.getElementById('p-balance-value').innerText = "₹" + bal.toFixed(2);
+            }
+            
             // Generate Small Receipt QR
             const qrBox = document.getElementById('p-receipt-qr');
             qrBox.innerHTML = "";
