@@ -38,6 +38,10 @@
             @page { margin: 15mm; size: A4 portrait; }
             body { background: white; margin: 0; padding: 0; }
             body * { visibility: hidden; }
+            /* Hide the main container completely to stop blank pages */
+            main { min-height: 0 !important; padding-bottom: 0 !important; }
+            #customer-view, #cart-modal, #search-order-modal, #analytics-modal { display: none !important; }
+            
             #print-section, #print-section * { visibility: visible; }
             #print-section {
                 position: absolute; left: 0; top: 0; width: 100%;
