@@ -914,23 +914,33 @@
                 `;
             });
             document.getElementById('p-total').innerText = data.total.toFixed(2);
-            document.getElementById('p-advance').innerText = (data.advance || 0).toFixed(2);
             
-            const bal = parseFloat(data.balance) || 0;
-            if (bal <= 0) {
+            // Check if this is a "Fully Paid" final receipt
+            if (data.isFinalReceipt) {
+                document.getElementById('p-invoice-title').innerText = "FINAL INVOICE";
+                document.getElementById('p-advance-label').innerText = "Amount Paid";
+                document.getElementById('p-advance').innerText = data.total.toFixed(2); // Amount Paid equals Total
                 document.getElementById('p-balance-label').innerText = "Status";
-                document.getElementById('p-balance-value').innerHTML = "<span style='color: green;'>Fully Paid</span>";
+                document.getElementById('p-balance-value').innerHTML = "<span style='color: green; font-weight: bold;'>Fully Paid</span>";
             } else {
-                document.getElementById('p-balance-label').innerText = "Balance Due";
-                document.getElementById('p-balance-value').innerText = "₹" + bal.toFixed(2);
+                document.getElementById('p-invoice-title').innerText = "PROFORMA INVOICE";
+                document.getElementById('p-advance-label').innerText = "Advance Paid";
+                document.getElementById('p-advance').innerText = (data.advance || 0).toFixed(2);
+                const bal = parseFloat(data.balance) || 0;
+                if (bal <= 0) {
+                    document.getElementById('p-balance-label').innerText = "Status";
+                    document.getElementById('p-balance-value').innerHTML = "<span style='color: green; font-weight: bold;'>Fully Paid</span>";
+                } else {
+                    document.getElementById('p-balance-label').innerText = "Balance Due";
+                    document.getElementById('p-balance-value').innerText = "₹" + bal.toFixed(2);
+                }
             }
             
             // Generate Small Receipt QR
             const qrBox = document.getElementById('p-receipt-qr');
             qrBox.innerHTML = "";
-            // Ensure the text is short enough to not crash the QR generator
-            let qrText = `Order: ${data.orderId}\nTotal: ₹${data.total}\nBalance: ₹${data.balance}`;
-            if (qrText.length > 200) qrText = data.orderId; // Fallback for extreme length
+            let qrText = `Order: ${data.orderId}\nTotal: ₹${data.total}\nBalance: ₹${data.isFinalReceipt ? '0.00' : data.balance}`;
+            if (qrText.length > 200) qrText = data.orderId; 
             try {
                 new QRCode(qrBox, { text: qrText, width: 50, height: 50, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
             } catch(e) { console.warn("QR too long"); }
