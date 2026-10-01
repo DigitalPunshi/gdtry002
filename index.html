@@ -254,15 +254,17 @@
                             <p class="text-[8px] text-gray-400 mt-1 font-mono max-w-[100px] truncate text-center" id="s-display-upi-id"></p>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="printA4Invoice()" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-bold shadow-md flex justify-center items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-                            Print PDF
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button onclick="printSearchProforma()" class="bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-bold shadow-md flex justify-center items-center gap-1 text-sm">
+                            Print Proforma
                         </button>
-                        <button onclick="forwardWhatsApp()" id="s-wa-btn" class="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white py-3 rounded-xl font-bold shadow-md flex justify-center items-center gap-2">
-                            WhatsApp
+                        <button onclick="printSearchFinalInvoice()" class="bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-bold shadow-md flex justify-center items-center gap-1 text-sm">
+                            Print Final
                         </button>
                     </div>
+                    <button onclick="forwardWhatsApp()" id="s-wa-btn" class="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3 rounded-xl font-bold shadow-md flex justify-center items-center gap-2">
+                        WhatsApp
+                    </button>
                 </div>
             </div>
         </div>
