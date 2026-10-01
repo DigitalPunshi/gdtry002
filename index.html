@@ -952,6 +952,32 @@
             document.getElementById('print-section').style.display = ''; 
         }
 
+        function printSearchProforma() {
+            if(!currentSearchedOrder) return;
+            const data = currentSearchedOrder;
+            prepareA4PrintLayout({
+                orderId: data.orderId, date: new Date(data.date), customer: data.name,
+                mobile: data.table && data.table !== 'Walk-in' ? data.table : '', address: data.address || '', 
+                items: parseItemsString(data.items), total: parseFloat(data.total) || 0,
+                advance: parseFloat(data.advance) || 0, balance: parseFloat(data.balance) || 0,
+                isFinalReceipt: false // Prints normal proforma
+            });
+            printA4Invoice();
+        }
+
+        function printSearchFinalInvoice() {
+            if(!currentSearchedOrder) return;
+            const data = currentSearchedOrder;
+            prepareA4PrintLayout({
+                orderId: data.orderId, date: new Date(data.date), customer: data.name,
+                mobile: data.table && data.table !== 'Walk-in' ? data.table : '', address: data.address || '', 
+                items: parseItemsString(data.items), total: parseFloat(data.total) || 0,
+                advance: parseFloat(data.advance) || 0, balance: parseFloat(data.balance) || 0,
+                isFinalReceipt: true // Triggers "Fully Paid" logic
+            });
+            printA4Invoice();
+        }
+
         function toggleHamburgerMenu() {
             const dropdown = document.getElementById('hamburger-dropdown');
             if (dropdown.classList.contains('hidden')) {
