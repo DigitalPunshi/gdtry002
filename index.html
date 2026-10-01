@@ -912,8 +912,12 @@
             // Generate Small Receipt QR
             const qrBox = document.getElementById('p-receipt-qr');
             qrBox.innerHTML = "";
-            const qrText = `Order: ${data.orderId}\nTotal: ₹${data.total}\nAdvance: ₹${data.advance}\nBalance: ₹${data.balance}`;
-            new QRCode(qrBox, { text: qrText, width: 50, height: 50, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
+            // Ensure the text is short enough to not crash the QR generator
+            let qrText = `Order: ${data.orderId}\nTotal: ₹${data.total}\nBalance: ₹${data.balance}`;
+            if (qrText.length > 200) qrText = data.orderId; // Fallback for extreme length
+            try {
+                new QRCode(qrBox, { text: qrText, width: 50, height: 50, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
+            } catch(e) { console.warn("QR too long"); }
         }
 
         function printA4Invoice() {
