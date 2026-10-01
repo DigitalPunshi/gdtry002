@@ -779,10 +779,8 @@
         }
 
         function confirmAndLogOrder() {
-            const cName = document.getElementById('customer-name').value.trim();
-            const cMobile = document.getElementById('customer-mobile').value.trim();
-            const cAddress = document.getElementById('customer-address').value.trim();
-            const cEmail = document.getElementById('customer-email').value.trim();
+            const cName = document.getElementById('customer-name').value.trim(); const cMobile = document.getElementById('customer-mobile').value.trim();
+            const cAddress = document.getElementById('customer-address').value.trim(); const cEmail = document.getElementById('customer-email').value.trim();
             const { total } = getCartTotal();
 
             if (!cName) { showToast("Customer Name is required."); return; }
@@ -796,26 +794,17 @@
 
             const advance = parseFloat(document.getElementById('advance-payment').value) || 0;
             const balance = total - advance;
-
             const token = Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-            const formData = new URLSearchParams();
-            formData.append('token', token);
-            formData.append('name', cName);
-            formData.append('mobile', cMobile);
-            formData.append('address', cAddress);
-            formData.append('email', cEmail);
-            formData.append('items', finalItemsText.trim());
-            formData.append('total', total);
-            formData.append('advance', advance); 
-            formData.append('balance', balance); 
-            formData.append('table', cMobile || 'Walk-in'); 
 
-            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData })
-            .then(res => res.text())
-            .then(result => {
-                if (result === "Duplicate") { showToast("Order already saved."); return; }
-                if (result.startsWith("Success|")) {
-                    const officialOrderId = result.split("|")[1]; 
+            // Bypassing Google POST restrictions by converting payload to URL parameters
+            const qs = new URLSearchParams({ action: 'saveOrder', token: token, name: cName, mobile: cMobile, address: cAddress, email: cEmail, items: finalItemsText.trim(), total: total, advance: advance, balance: balance, table: cMobile || 'Walk-in' }).toString();
+
+            fetch(`${GOOGLE_SCRIPT_URL}?${qs}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.duplicate) { showToast("Order already saved."); return; }
+                if (data.success) {
+                    const officialOrderId = data.orderId; 
                     btn.style.display = 'none';
 
                     prepareA4PrintLayout({ orderId: officialOrderId, date: new Date(), customer: cName, mobile: cMobile, address: cAddress, items: Object.values(cart), total: total, advance: advance, balance: balance });
@@ -843,12 +832,10 @@
                     if(UPI_ID && advance > 0) {
                         const upiStr = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${advance.toFixed(2)}&cu=INR`;
                         new QRCode(advQrBox, { text: upiStr, width: 100, height: 100, colorDark : "#000080", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.M });
-                    } else {
-                        advQrBox.innerHTML = "<span class='text-xs text-gray-400'>No Advance to Pay</span>";
-                    }
-                } else { throw new Error(result); }
+                    } else { advQrBox.innerHTML = "<span class='text-xs text-gray-400'>No Advance to Pay</span>"; }
+                } else { throw new Error("Failed to save"); }
             }).catch(e => {
-                showToast("Offline Mode / Error Saving. Order Generated Locally.");
+                showToast("Offline Mode / Error Saving. Order Generated Locally."); console.error(e);
                 const localId = `GD-${currentYear}-${currentMonth}-${currentDay}-L${Math.floor(Math.random()*1000)}`;
                 btn.style.display = 'none';
                 prepareA4PrintLayout({ orderId: localId, date: new Date(), customer: cName, mobile: cMobile, address: cAddress, items: Object.values(cart), total: total, advance: advance, balance: balance });
