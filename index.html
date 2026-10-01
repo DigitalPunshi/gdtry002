@@ -1019,7 +1019,9 @@
                     qrContainer.innerHTML = ""; 
                     if(UPI_ID && bal > 0) {
                         const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${bal.toFixed(2)}&cu=INR`;
-                        new QRCode(qrContainer, { text: upiString, width: 100, height: 100, colorDark : "#000080", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.M });
+                        try {
+                            new QRCode(qrContainer, { text: upiString, width: 100, height: 100, colorDark : "#000080", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L });
+                        } catch(e) { qrContainer.innerHTML = "<span class='text-xs text-red-400'>QR Data Too Long</span>"; }
                     } else {
                         qrContainer.innerHTML = "<span class='text-xs text-gray-400'>Fully Paid</span>";
                     }
