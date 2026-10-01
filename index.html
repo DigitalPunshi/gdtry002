@@ -835,10 +835,10 @@
                 `;
 
                 const advQrBox = document.getElementById('advance-qr-container');
-                if(UPI_ID && advance > 0) {
-                    const upiStr = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${advance.toFixed(2)}&cu=INR`;
-                    new QRCode(advQrBox, { text: upiStr, width: 100, height: 100, colorDark : "#000080", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.M });
-                } else { advQrBox.innerHTML = "<span class='text-xs text-gray-400'>No Advance to Pay</span>"; }
+                    if(UPI_ID && advance > 0) {
+                        const upiStr = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${advance.toFixed(2)}&cu=INR`;
+                        new QRCode(advQrBox, { text: upiStr, width: 100, height: 100, colorDark : "#000080", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L });
+                    } else { advQrBox.innerHTML = "<span class='text-xs text-gray-400'>No Advance to Pay</span>"; }
                 
                 showToast("Order Saved!");
             }).catch(e => {
